@@ -1,0 +1,202 @@
+import pymysql as pm
+
+
+
+
+def connectdb():
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        cursor = con.cursor()
+        query = 'create table if not exist Signup(UserId int primary key 
+auto_increment, PhoneNumber int(10), \
+            UserName varchar(10), Password varchar(20), EmailId 
+varchar(30),Type varchar(45)'
+        cursor.execute(query)
+        con.commit()
+
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+def ins(Phonenumber, UserName, Password, EmailID):
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        cursor = con.cursor()
+        status=False
+        #query = 'insert into Signup values (NULL, %s, %s, %s, 
+%s,"Member")'
+        #data=(Phonenumber, UserName, Password, EmailID)
+        cursor.execute('insert into 
+Signup(UserId,PhoneNumber,UserName,Password,EmailId,Type) values (NULL, 
+%s, %s, %s, %s,"Member")',(Phonenumber, UserName, Password, EmailID))
+        con.commit()
+        status=True
+        return status
+
+
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
+
+
+def LOGIN(UserName='',Password=''):
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        cursor = con.cursor()
+        query = 'select * from Signup where UserName=%s OR Password=%s'
+        d=(UserName, Password)
+        cursor.execute(query,d)
+        data = cursor.fetchall()
+        return data
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+def insert(id,name,comp,availability):
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        cursor = con.cursor()
+        flag=False
+        #query = "insert into book values (NULL,%s,%s,%s,%s)",((title, 
+author, year, isbn))
+        cursor.execute('insert into stock values 
+(%s,%s,%s,%s)',(id,name,comp,availability))
+        con.commit()
+        flag=True
+        return flag
+
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
+def vieew():
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        cursor = con.cursor()
+        query = 'select * from stock'
+        cursor.execute(query)
+        data = cursor.fetchall()
+        return data
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
+def find(product='', company=''):
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        cursor = con.cursor()
+        cursor.execute('select * from stock where product_name=%s OR 
+company=%s',(product,company))
+        data = cursor.fetchall()
+        return data
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
+def deleete(id):
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        cursor = con.cursor()
+        cursor.execute('delete from stock where id=%s',(id,))
+        con.commit()
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
+def updatee(name,comp,avl,id):
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        cursor = con.cursor()
+        cursor.execute('update stock set product_name=%s, company=%s, 
+availability=%s where id=%s',(name,comp,avl,id))
+        con.commit()
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
+def alt(val):
+    try:
+        con = pm.connect(host='localhost', database='ongc', \
+                         user='root', password='root')
+        t=False
+        cursor = con.cursor()
+        cursor.execute('update stock set availability=availability-1 
+where id=%s',
+                       (val))
+        con.commit()
+        t=True
+        return t
+    except pm.DatabaseError as e:
+        if con:
+            con.rollback()
+            print('Problem occured: ', e)
+
+    finally:
+        if cursor:
+            cursor.close()
+        if con:
+            con.close()
+
