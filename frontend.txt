@@ -1,0 +1,373 @@
+from tkinter import *
+import time
+from backend import *
+from tkinter import messagebox
+
+root=Tk()
+root.title("Stock Management System")
+root.configure(background='white')
+root.geometry("700x400+0+0")
+frame1=Frame(root, bg='white',width=1500,height=60)
+frame1.pack(side=TOP)
+frame2 = Frame(root, bg='white',width=900,height=700)
+frame2.pack()
+lbL1=Label(frame1, text='Stock Management 
+System',font=('aria',40,'bold'))
+lbL1.grid(row=0,column=0)
+localtime=time.asctime(time.localtime(time.time()))
+lbl2=Label(frame1,font=('aria',20,),text=localtime,anchor=W)
+lbl2.grid(row=1,column=0)
+
+##############################################################new gui 
+window for signup and login#############
+def sign():
+    n=txt3.get()
+    psw=txt4.get()
+    e=txt5.get()
+    p=txt6.get()
+    if len(p)!=10 or (not int(p.isdigit())):
+        root.withdraw()
+        messagebox.showwarning("Error","Not a valid Mobile Number")
+    else:
+        status=ins(p,n,psw,e)
+        if status:
+            lbL=Label(roo,text="Thank You for registering with 
+us",font=('Times',30,'bold'))
+            lbL.pack()
+            roo.mainloop()
+def signup():
+    global roo
+    roo=Tk()
+    roo.title("Welcome")
+    roo.configure(background="white")
+    roo.geometry("1600x700+0+0")
+    frame3 = Frame(roo, bg='grey', width=1500, height=60)
+    frame3.pack(side=TOP)
+    frame4 = Frame(roo, bg='white', width=900, height=700)
+    frame4.pack(side=LEFT)
+    lbL1 = Label(frame3, text='Welcome Ongcian', font=('aria', 30, 
+'bold'))
+    lbL1.grid(row=0, column=0)
+    lbL = Label(frame4, text='SignUP', font=('aria', 30, 'bold'))
+    lbL.grid(row=0, column=1)
+
+    lbl3 = Label(frame4, font=('aria', 16, 'bold'), text='Name', 
+anchor=W)
+    lbl3.grid(row=1, column=1)
+    global txt3
+    txt3 = Entry(frame4, font=('ariel', 16, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,
+                 justify='left')
+    txt3.grid(row=1, column=2)
+
+    lbl4 = Label(frame4, font=('aria', 16, 'bold'), text='Password', 
+anchor=W)
+    lbl4.grid(row=2, column=1)
+    global txt4
+    txt4 = Entry(frame4, font=('ariel', 16, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,
+                 justify='left',show='*')
+    txt4.grid(row=2, column=2)
+
+    lbl5 = Label(frame4, font=('aria', 16, 'bold'), text='EmailId', 
+anchor=W)
+    lbl5.grid(row=3, column=1)
+
+    global txt5
+    txt5 = Entry(frame4, font=('ariel', 16, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,
+                 justify='left')
+    txt5.grid(row=3, column=2)
+
+    lbl6 = Label(frame4, font=('aria', 16, 'bold'),text='PhoneNumber', 
+anchor=W)
+    lbl6.grid(row=4, column=1)
+
+    global txt6
+    txt6 = Entry(frame4, font=('ariel', 16, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,
+                 justify='left')
+    txt6.grid(row=4, column=2)
+    btn = Button(frame4, padx=5, pady=5, bd=4, font=('ariel', 20, 
+'bold'), text="submit", bg="grey", command=sign)
+    btn.grid(row=5, column=2)
+    roo.mainloop()
+
+def view():
+    lstbox.delete(0,'end')
+    data=vieew()
+    for i in data:
+        lstbox.insert(END,i)
+
+def search():
+    prod = e1.get()
+    comp = e2.get()
+
+    d = find(prod,comp)
+    lstbox.delete(0,'end')
+    for i in d:
+        lstbox.insert(END, i)
+
+def add():
+    id=e0.get()
+    prod=e1.get()
+    comp=e2.get()
+    avl=e3.get()
+
+    flag=insert(id,prod,comp,avl)
+    if flag:
+        messagebox.showinfo("Successfull", "Item Inserted Successfully")
+        e0.delete(0,END)
+        e1.delete(0,END)
+        e2.delete(0,END)
+        e3.delete(0,END)
+        e0.focus()
+
+
+
+def getElement(event):
+    '''get the details of currently selected element in listbox'''
+    global value
+    w=event.widget
+    idx=w.curselection()[0]
+    value=w.get(idx)
+    reset()
+    e0.insert(0,value[0])
+    e1.insert(0,value[1])
+    e2.insert(0,value[2])
+    e3.insert(0,value[3])
+
+def getValue(event):
+    global val
+    w=event.widget
+    idx=w.curselection()[0]
+    val=w.get(idx)
+
+def dec():
+    id = val[0]
+    r = messagebox.askquestion("", "Do you want to take this item?", 
+icon='question')
+    if r == 'yes':
+        t=alt(id)
+        if t:
+            viewm()
+        else:
+            messagebox.showerror("Error","Sorry No Stock For This Item")
+
+
+def viewm():
+    box.delete(0,END)
+    val = vieew()
+    for i in val:
+        box.insert(END, i)
+
+
+def update():
+    prod = e1.get()
+    comp = e2.get()
+    avl = e3.get()
+    id = value[0]
+    updatee(prod,comp,avl,id)
+    view()
+
+def delete():
+    id = value[0]
+    r=messagebox.askquestion("Delete","Do you want to delete this 
+item?",icon='warning')
+    if r== 'yes':
+        deleete(id)
+        messagebox.showinfo("Successful","Item Deleted Successfully")
+        reset()
+        view()
+
+def reset():
+    e0.delete(0, 'end')
+    e1.delete(0, 'end')
+    e2.delete(0, 'end')
+    e3.delete(0, 'end')
+def log():
+    uname=txt1.get()
+    pwd=txt2.get()
+    data=LOGIN(uname,pwd)
+    for i in data:
+        if i[5]=="Member":
+            root.withdraw()
+            r = Tk()
+            r.title("welcome")
+            r.configure(background="white")
+            r.geometry("1600x700+0+0")
+            frame5 = Frame(r, bg='grey', width=600, height=60)
+            frame5.pack(side=TOP)
+            frame6 = Frame(r, bg='white', width=200, height=80)
+            frame6.pack(side=LEFT)
+            user="Welcome "+str(i[2])
+            lbL1 = Label(frame5, text=user, font=('aria', 30, 'bold'))
+            lbL1.grid(row=0, column=0)
+
+            global box
+            box = Listbox(frame6, height=6, width=35, font=('Serif', 12, 
+'bold'))
+            box.grid(row=2, column=0, rowspan=6, columnspan=2)
+
+            # add scrollbar to listbox
+            global scb
+            scb = Scrollbar(frame6)
+            scb.grid(row=2, column=2, rowspan=6)
+
+            box.configure(yscrollcommand=scb.set)
+            scb.configure(command=box.yview)
+
+            btn1 = Button(frame6, text='View All',font=('Times New 
+Roman', 14, 'bold'), width=15, command=viewm)
+            btn1.grid(row=2, column=4)
+            btn2 = Button(frame6, text='Take Selected Item',font=('Times 
+New Roman', 14, 'bold'), width=15, command=dec)
+            btn2.grid(row=3, column=4)
+
+            box.bind('<<ListboxSelect>>', getValue)
+            r.mainloop()
+
+        elif i[5]=="Admin":
+            root.withdraw()
+            rooot = Tk()
+            rooot.title("welcome")
+            rooot.configure(background="white")
+            rooot.geometry("1600x700+0+0")
+            frame5 = Frame(rooot, bg='grey', width=600, height=60)
+            frame5.pack(side=TOP)
+            frame6 = Frame(rooot, bg='white', width=250, height=120)
+            frame6.pack(side=LEFT)
+            user = "Welcome " + str(i[2])
+            lbL1 = Label(frame5, text=user, font=('aria', 30, 'bold'))
+            lbL1.grid(row=0, column=0)
+
+            l0 = Label(frame6, text='Product Id', font=('Times New 
+Roman', 14, 'bold'))
+            l0.grid(row=0, column=1)
+
+            l1 = Label(frame6, text='Product Name',font=('Times New 
+Roman', 14, 'bold'))
+            l1.grid(row=1, column=1)
+
+            l2 = Label(frame6, text='Company',font=('Times New Roman', 
+14, 'bold'))
+            l2.grid(row=2, column=1)
+
+            l3 = Label(frame6, text='Availability',font=('Times New 
+Roman', 14, 'bold'))
+            l3.grid(row=3, column=1)
+
+            # define Entries
+            global e0
+            e0 = Entry(frame6, font=('ariel', 14, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4, justify='left')
+            e0.grid(row=0, column=2)
+
+            global e1
+            e1 = Entry(frame6,font=('ariel', 14, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,justify='left')
+            e1.grid(row=1, column=2)
+
+            global e2
+            e2 = Entry(frame6,font=('ariel', 14, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,justify='left')
+            e2.grid(row=2, column=2)
+
+
+            global e3
+            e3 = Entry(frame6,font=('ariel', 14, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,justify='left')
+            e3.grid(row=3, column=2)
+
+            # define Listbox
+            global lstbox
+            lstbox = Listbox(frame6, height=6, 
+width=40,font=('Serif',12,'bold'))
+            lstbox.grid(row=4, column=0, rowspan=6, columnspan=3)
+
+            # add scrollbar to listbox
+            global sb
+            sb = Scrollbar(frame6)
+            sb.grid(row=4, column=3, rowspan=6)
+
+            lstbox.configure(yscrollcommand=sb.set)
+            sb.configure(command=lstbox.yview)
+
+            b1 = Button(frame6, text='View All', width=12, command=view)
+            b1.grid(row=0, column=4)
+
+            b2 = Button(frame6, text='Search Entry', width=12, 
+command=search)
+            b2.grid(row=1, column=4)
+
+            b3 = Button(frame6, text='Add Entry', width=12, command=add)
+            b3.grid(row=2, column=4)
+
+            b4 = Button(frame6, text='Update Selected', width=12, 
+command=update)
+            b4.grid(row=3, column=4)
+
+            b5 = Button(frame6, text='Delete Selected', width=12, 
+command=delete)
+            b5.grid(row=4, column=4)
+
+            b6 = Button(frame6, text='Reset', width=12, command=reset)
+            b6.grid(row=5, column=4)
+
+            b7 = Button(frame6, text='Close', width=12, 
+command=rooot.destroy)
+            b7.grid(row=6, column=4)
+
+
+            #lstbox.bind('<<ListboxSelect>>', getElement)
+            lstbox.bind('<Button-1>', getElement)
+
+            rooot.mainloop()
+
+def login():
+    ro = Tk()
+    ro.title("welcome")
+    ro.configure(background="white")
+    ro.geometry("1600x700+0+0")
+    frame7 = Frame(ro, bg='grey', width=600, height=60)
+    frame7.pack(side=TOP)
+    frame8 = Frame(ro, bg='white', width=200, height=80)
+    frame8.pack(side=LEFT)
+    lbL1 = Label(frame7, text='Welcome Ongcian', font=('aria', 30, 
+'bold'))
+    lbL1.grid(row=0, column=0)
+    lbLA = Label(frame8, text='Login', font=('aria', 30, 'bold'))
+    lbLA.grid(row=0, column=1)
+
+    lbl3 = Label(frame8, font=('aria', 16, 'bold'),text="UserName", 
+anchor=W)
+    lbl3.grid(row=1, column=1)
+    global txt1
+    txt1 = Entry(frame8, font=('ariel', 16, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,
+                 justify='left')
+    txt1.grid(row=1, column=2)
+    lbl4 = Label(frame8, font=('aria', 16, 'bold'),text="Password", 
+anchor=W)
+    lbl4.grid(row=2, column=1)
+    global txt2
+    txt2 = Entry(frame8, font=('ariel', 16, 'bold'), bd=6, bg="sky 
+blue", insertwidth=4,
+                 justify='left',show='*')
+    txt2.grid(row=2, column=2)
+
+    btn = Button(frame8, padx=5, pady=5, bd=4, font=('ariel', 20, 
+'bold'), text="Login", bg="grey",command=log)
+    btn.grid(row=4, column=2)
+
+
+    ro.mainloop()
+
+btns=Button(frame2,padx=5,pady=5,bd=4,font=('ariel', 20 
+,'bold'),text="Signup",bg="grey",command=signup)
+btns.grid(row=0,column=9)
+btn=Button(frame2,padx=5,pady=5,bd=4,font=('ariel', 20 
+,'bold'),text="Login",bg="grey",command=login)
+btn.grid(row=0,column=10)
+root.mainloop()
+
